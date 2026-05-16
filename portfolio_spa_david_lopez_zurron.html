@@ -1,0 +1,635 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07070d;--s1:#0f0f1a;--s2:#161624;--s3:#1e1e30;
+  --v:#8b5cf6;--v2:#a78bfa;--v3:#c4b5fd;--vd:#4c1d95;
+  --pk:#ec4899;--tl:#14b8a6;--am:#f59e0b;
+  --tx:#f5f3ff;--mu:#7c7a9e;--br:#2a2840;
+  --fh:'Syne',sans-serif;--fb:'Outfit',sans-serif;--fm:'Space Mono',monospace;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--tx);font-family:var(--fb);overflow-x:hidden;min-height:100vh}
+
+/* ── SIDEBAR NAV ── */
+#sidebar{
+  width:72px;background:var(--s1);border-right:1px solid var(--br);
+  display:flex;flex-direction:column;align-items:center;padding:2rem 0;gap:0.5rem;
+  position:sticky;top:0;height:100vh;flex-shrink:0;z-index:50;
+  transition:width 0.3s cubic-bezier(.4,0,.2,1);overflow:hidden;
+}
+#sidebar:hover{width:200px}
+.nav-brand{
+  font-family:var(--fh);font-weight:800;font-size:1.1rem;color:var(--v);
+  white-space:nowrap;padding:0 1.2rem;margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:0.6rem;min-width:200px;
+}
+.nav-brand span{opacity:0;transition:opacity 0.2s 0.1s;font-size:0.95rem}
+#sidebar:hover .nav-brand span{opacity:1}
+.nav-item{
+  width:100%;display:flex;align-items:center;gap:0.9rem;
+  padding:0.7rem 1.2rem;cursor:pointer;border:none;background:transparent;
+  color:var(--mu);font-family:var(--fm);font-size:0.72rem;letter-spacing:0.05em;
+  transition:color 0.2s,background 0.2s;white-space:nowrap;min-width:200px;
+  position:relative;text-align:left;
+}
+.nav-item:hover{color:var(--v2);background:rgba(139,92,246,0.06)}
+.nav-item.active{color:var(--v);background:rgba(139,92,246,0.12)}
+.nav-item.active::before{
+  content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:3px;height:60%;background:var(--v);border-radius:0 2px 2px 0;
+}
+.nav-icon{font-size:1.1rem;flex-shrink:0;width:20px;text-align:center}
+.nav-label{opacity:0;transition:opacity 0.15s 0.08s;font-size:0.72rem}
+#sidebar:hover .nav-label{opacity:1}
+.nav-prog{
+  margin-top:auto;padding:1.2rem;width:100%;
+  display:flex;flex-direction:column;gap:4px;min-width:200px;
+}
+.prog-track{height:3px;background:var(--br);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--v),var(--pk));border-radius:2px;transition:width 0.3s}
+.prog-label{font-family:var(--fm);font-size:0.62rem;color:var(--mu);opacity:0;transition:opacity 0.15s 0.08s}
+#sidebar:hover .prog-label{opacity:1}
+
+/* ── MAIN LAYOUT ── */
+#app{display:flex;min-height:100vh}
+#main{flex:1;overflow:hidden}
+
+/* ── SECTIONS ── */
+.view{display:none;min-height:100vh;animation:fadeIn 0.4s ease}
+.view.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SECTION INDICATOR ── */
+#sec-indicator{
+  position:sticky;top:0;z-index:40;background:rgba(7,7,13,0.85);
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--br);
+  padding:0.85rem 3rem;display:flex;align-items:center;gap:1rem;
+}
+.sec-num{font-family:var(--fm);font-size:0.7rem;color:var(--v);letter-spacing:0.1em}
+.sec-name{font-family:var(--fh);font-weight:700;font-size:1rem;color:var(--tx)}
+.sec-breadcrumb{font-family:var(--fm);font-size:0.68rem;color:var(--mu);margin-left:auto}
+
+/* ── HERO ── */
+#hero-view{
+  display:flex;align-items:center;min-height:100vh;padding:0;position:relative;overflow:hidden;
+}
+#hero-view.active{display:flex}
+.hero-noise{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 50% at 80% 50%,rgba(139,92,246,0.15) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 60% at 10% 80%,rgba(236,72,153,0.08) 0%,transparent 50%),
+    radial-gradient(ellipse 30% 30% at 90% 10%,rgba(20,184,166,0.06) 0%,transparent 50%);
+}
+.hero-lines{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(42,40,64,0.5) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(42,40,64,0.5) 1px,transparent 1px);
+  background-size:80px 80px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 0%,transparent 100%);
+}
+.hero-inner{position:relative;z-index:1;padding:4rem 4rem;max-width:780px}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:0.6rem;
+  font-family:var(--fm);font-size:0.75rem;color:var(--v2);
+  border:1px solid rgba(139,92,246,0.3);padding:0.35rem 0.9rem;
+  border-radius:2px;margin-bottom:2rem;letter-spacing:0.08em;
+}
+.eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--tl);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+.hero-name{
+  font-family:var(--fh);font-weight:800;font-size:clamp(3.2rem,5.5vw,5.5rem);
+  line-height:1.0;letter-spacing:-0.04em;margin-bottom:1.2rem;
+}
+.hero-name .line2{
+  display:block;color:transparent;
+  -webkit-text-stroke:1.5px var(--v2);
+}
+.hero-sub{font-family:var(--fh);font-size:1.6rem;font-weight:700;color:var(--pk);margin-bottom:1.5rem;letter-spacing:-0.02em}
+.hero-desc{font-size:1rem;color:var(--mu);max-width:500px;line-height:1.85;margin-bottom:2.5rem}
+.hero-ctas{display:flex;gap:1rem;flex-wrap:wrap}
+.cta{
+  font-family:var(--fm);font-size:0.78rem;padding:0.75rem 1.6rem;
+  border-radius:2px;text-decoration:none;letter-spacing:0.05em;
+  transition:all 0.2s;cursor:pointer;border:none;display:inline-block;
+}
+.cta-fill{background:var(--v);color:#fff}
+.cta-fill:hover{background:#7c3aed;transform:translateY(-2px)}
+.cta-ghost{background:transparent;color:var(--v2);border:1px solid rgba(139,92,246,0.4)}
+.cta-ghost:hover{background:rgba(139,92,246,0.08)}
+.hero-stat-row{
+  display:flex;gap:2.5rem;margin-top:3.5rem;padding-top:2rem;
+  border-top:1px solid var(--br);
+}
+.h-stat{display:flex;flex-direction:column;gap:2px}
+.h-stat-n{font-family:var(--fh);font-size:1.8rem;font-weight:800;color:var(--tx)}
+.h-stat-l{font-family:var(--fm);font-size:0.65rem;color:var(--mu);letter-spacing:0.08em;text-transform:uppercase}
+.hero-badge{
+  position:absolute;right:4rem;top:50%;transform:translateY(-50%);
+  width:220px;height:220px;display:flex;align-items:center;justify-content:center;
+}
+.badge-ring{
+  width:200px;height:200px;border-radius:50%;border:1px solid rgba(139,92,246,0.2);
+  display:flex;align-items:center;justify-content:center;position:relative;
+  animation:spinSlow 20s linear infinite;
+}
+.badge-ring::before{
+  content:'';position:absolute;inset:-1px;border-radius:50%;
+  border:1px dashed rgba(139,92,246,0.15);
+}
+.badge-core{
+  width:140px;height:140px;border-radius:50%;background:var(--s2);
+  border:1px solid var(--br);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px;
+  animation:spinSlow 20s linear infinite reverse;
+}
+.badge-init{font-family:var(--fh);font-size:2.5rem;font-weight:800;color:var(--v)}
+.badge-sub{font-family:var(--fm);font-size:0.6rem;color:var(--mu);text-align:center;padding:0 0.5rem}
+@keyframes spinSlow{to{transform:rotate(360deg)}}
+
+/* ── CONTENT SECTIONS ── */
+.sec-wrap{padding:4rem 3.5rem;max-width:900px}
+.sec-head{margin-bottom:3rem}
+.sec-kicker{font-family:var(--fm);font-size:0.7rem;color:var(--v);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.6rem}
+.sec-title{font-family:var(--fh);font-size:clamp(2rem,3vw,3rem);font-weight:800;letter-spacing:-0.03em;line-height:1.1}
+.sec-title em{font-style:normal;color:transparent;-webkit-text-stroke:1px var(--v2)}
+.sec-line{width:40px;height:3px;background:linear-gradient(90deg,var(--v),var(--pk));margin-top:1rem;border-radius:2px}
+
+/* ── ABOUT ── */
+.about-layout{display:grid;grid-template-columns:auto 1fr;gap:4rem;align-items:start}
+.about-left{display:flex;flex-direction:column;gap:1.5rem}
+.av-wrap{position:relative;width:160px}
+.av-circle{
+  width:160px;height:160px;border-radius:50%;background:linear-gradient(135deg,var(--vd),var(--v));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fh);font-size:2.8rem;font-weight:800;color:#fff;
+}
+.av-ring{
+  position:absolute;inset:-8px;border-radius:50%;
+  border:1px solid transparent;
+  background:linear-gradient(var(--bg),var(--bg)) padding-box,
+             linear-gradient(135deg,var(--v),var(--pk),var(--tl)) border-box;
+  animation:spinSlow 8s linear infinite;
+}
+.about-chips{display:flex;flex-direction:column;gap:0.4rem}
+.chip{
+  font-family:var(--fm);font-size:0.68rem;padding:0.3rem 0.7rem;
+  border-radius:2px;border:1px solid var(--br);color:var(--mu);
+  display:flex;align-items:center;gap:0.4rem;
+}
+.chip-dot{width:5px;height:5px;border-radius:50%;background:var(--tl);flex-shrink:0}
+.about-text p{color:var(--mu);line-height:1.85;margin-bottom:1rem;font-size:0.95rem}
+.about-text p:last-child{margin-bottom:0}
+.about-text strong{color:var(--tx)}
+
+/* ── TIMELINE ── */
+.tl{position:relative;padding-left:2rem}
+.tl::before{content:'';position:absolute;left:0;top:8px;bottom:0;width:1px;background:linear-gradient(to bottom,var(--v),rgba(139,92,246,0.1))}
+.tl-item{position:relative;margin-bottom:2.5rem}
+.tl-dot{
+  position:absolute;left:-2.35rem;top:6px;
+  width:10px;height:10px;border-radius:50%;
+  background:var(--v);border:2px solid var(--bg);box-shadow:0 0 0 3px rgba(139,92,246,0.2);
+}
+.tl-period{font-family:var(--fm);font-size:0.7rem;color:var(--v);margin-bottom:0.3rem;letter-spacing:0.05em}
+.tl-role{font-family:var(--fh);font-size:1.05rem;font-weight:700;margin-bottom:0.2rem}
+.tl-org{font-size:0.85rem;color:var(--pk);margin-bottom:0.6rem;font-family:var(--fm);font-size:0.72rem}
+.tl-desc{font-size:0.88rem;color:var(--mu);line-height:1.75}
+
+/* ── SKILLS ── */
+.skills-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.sk-card{
+  background:var(--s1);border:1px solid var(--br);border-radius:4px;
+  padding:1.4rem;transition:border-color 0.2s,transform 0.2s;
+}
+.sk-card:hover{border-color:rgba(139,92,246,0.4);transform:translateY(-2px)}
+.sk-cat{font-family:var(--fm);font-size:0.68rem;color:var(--v);letter-spacing:0.12em;margin-bottom:1rem;text-transform:uppercase}
+.sk-tags{display:flex;flex-wrap:wrap;gap:0.4rem}
+.sk-tag{
+  font-family:var(--fm);font-size:0.7rem;padding:0.22rem 0.55rem;
+  border-radius:2px;background:var(--s2);color:var(--mu);border:1px solid var(--br);
+}
+.sk-tag.hi{color:var(--v2);border-color:rgba(139,92,246,0.35);background:rgba(139,92,246,0.08)}
+.sk-tag.top{color:var(--tx);border-color:var(--v);background:rgba(139,92,246,0.15)}
+
+/* ── PROJECTS ── */
+.proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.proj-card{
+  background:var(--s1);border:1px solid var(--br);border-radius:4px;
+  padding:1.5rem;display:flex;flex-direction:column;gap:0.9rem;
+  position:relative;overflow:hidden;transition:all 0.25s;
+}
+.proj-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--v),var(--pk));
+  transform:scaleX(0);transform-origin:left;transition:transform 0.3s;
+}
+.proj-card:hover::after{transform:scaleX(1)}
+.proj-card:hover{border-color:rgba(139,92,246,0.25);transform:translateY(-3px)}
+.proj-head{display:flex;justify-content:space-between;align-items:flex-start}
+.proj-title{font-family:var(--fh);font-size:1.05rem;font-weight:700}
+.proj-badge{
+  font-family:var(--fm);font-size:0.65rem;padding:0.2rem 0.55rem;
+  border-radius:2px;background:rgba(139,92,246,0.1);color:var(--v2);
+  border:1px solid rgba(139,92,246,0.25);
+}
+.proj-desc{font-size:0.85rem;color:var(--mu);line-height:1.7;flex:1}
+.proj-stack{display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:auto}
+.st{font-family:var(--fm);font-size:0.67rem;padding:0.18rem 0.45rem;border-radius:2px;background:var(--s2);color:var(--mu)}
+
+/* ── IDIOMAS ── */
+.lang-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:3rem}
+.lang-card{background:var(--s1);border:1px solid var(--br);border-radius:4px;padding:1.25rem}
+.lang-n{font-family:var(--fh);font-weight:700;font-size:1rem;margin-bottom:2px}
+.lang-lv{font-family:var(--fm);font-size:0.7rem;color:var(--v);margin-bottom:0.8rem}
+.lang-bar{height:3px;background:var(--s3);border-radius:2px;overflow:hidden}
+.lang-fill{height:100%;background:linear-gradient(90deg,var(--v),var(--pk));border-radius:2px}
+.tools-flex{display:flex;flex-wrap:wrap;gap:0.6rem}
+.tool{
+  display:flex;align-items:center;gap:0.4rem;font-family:var(--fm);font-size:0.72rem;
+  padding:0.35rem 0.8rem;border-radius:2px;background:var(--s1);
+  border:1px solid var(--br);color:var(--mu);transition:all 0.18s;
+}
+.tool:hover{border-color:var(--v);color:var(--v2)}
+.tool-dot{width:5px;height:5px;border-radius:50%;background:var(--tl);flex-shrink:0}
+
+/* ── OBJETIVOS ── */
+.obj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem}
+.obj-card{background:var(--s1);border:1px solid var(--br);border-radius:4px;padding:1.5rem}
+.obj-n{font-family:var(--fh);font-size:3rem;font-weight:800;color:var(--v);opacity:0.18;line-height:1;margin-bottom:0.5rem}
+.obj-t{font-family:var(--fh);font-weight:700;font-size:0.95rem;margin-bottom:0.5rem}
+.obj-d{font-size:0.84rem;color:var(--mu);line-height:1.65}
+
+/* ── REFLEXIÓN ── */
+.ref-box{
+  background:var(--s1);border-radius:4px;padding:2.5rem;
+  border-left:3px solid var(--v);position:relative;overflow:hidden;
+}
+.ref-box::before{
+  content:'"';position:absolute;right:2rem;top:0;
+  font-family:var(--fh);font-size:12rem;font-weight:800;
+  color:rgba(139,92,246,0.05);line-height:1;pointer-events:none;
+}
+.ref-quote{font-family:var(--fh);font-size:1.3rem;font-weight:700;line-height:1.5;margin-bottom:1.5rem;color:var(--tx)}
+.ref-p{font-size:0.9rem;color:var(--mu);line-height:1.85;margin-bottom:1rem}
+.ref-p:last-child{margin-bottom:0}
+.ref-p strong{color:var(--tx)}
+
+/* ── FOOTER ROW ── */
+.footer-row{
+  padding:1.5rem 3.5rem;border-top:1px solid var(--br);
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--fm);font-size:0.7rem;color:var(--mu);
+}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{color:var(--mu);text-decoration:none;transition:color 0.2s}
+.footer-links a:hover{color:var(--v2)}
+</style>
+
+<div id="app">
+
+<nav id="sidebar">
+  <div class="nav-brand">
+    <span style="color:var(--v);font-size:1.1rem;flex-shrink:0">◈</span>
+    <span>DLZ_</span>
+  </div>
+  <button class="nav-item active" data-view="hero-view" onclick="goto('hero-view',this)">
+    <span class="nav-icon">⌂</span>
+    <span class="nav-label">inicio</span>
+  </button>
+  <button class="nav-item" data-view="about-view" onclick="goto('about-view',this)">
+    <span class="nav-icon">◉</span>
+    <span class="nav-label">sobre mí</span>
+  </button>
+  <button class="nav-item" data-view="cv-view" onclick="goto('cv-view',this)">
+    <span class="nav-icon">◈</span>
+    <span class="nav-label">formación</span>
+  </button>
+  <button class="nav-item" data-view="exp-view" onclick="goto('exp-view',this)">
+    <span class="nav-icon">◇</span>
+    <span class="nav-label">experiencia</span>
+  </button>
+  <button class="nav-item" data-view="proj-view" onclick="goto('proj-view',this)">
+    <span class="nav-icon">⬡</span>
+    <span class="nav-label">proyectos</span>
+  </button>
+  <button class="nav-item" data-view="skills-view" onclick="goto('skills-view',this)">
+    <span class="nav-icon">◈</span>
+    <span class="nav-label">habilidades</span>
+  </button>
+  <button class="nav-item" data-view="lang-view" onclick="goto('lang-view',this)">
+    <span class="nav-icon">◎</span>
+    <span class="nav-label">idiomas</span>
+  </button>
+  <button class="nav-item" data-view="obj-view" onclick="goto('obj-view',this)">
+    <span class="nav-icon">◉</span>
+    <span class="nav-label">objetivos</span>
+  </button>
+  <button class="nav-item" data-view="ref-view" onclick="goto('ref-view',this)">
+    <span class="nav-icon">✦</span>
+    <span class="nav-label">reflexión</span>
+  </button>
+  <div class="nav-prog">
+    <div class="prog-label" id="prog-label">01 / 09 — inicio</div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:11%"></div></div>
+  </div>
+</nav>
+
+<div id="main">
+
+  <!-- HERO -->
+  <div class="view active" id="hero-view">
+    <div style="position:relative;min-height:100vh;display:flex;align-items:center;">
+      <div class="hero-noise"></div>
+      <div class="hero-lines"></div>
+      <div class="hero-inner">
+        <div class="hero-eyebrow"><span class="eyebrow-dot"></span>disponible · Madrid · 1º DAW</div>
+        <h1 class="hero-name">David<br><span class="line2">López Zurrón</span></h1>
+        <p class="hero-sub">Desarrollador de Aplicaciones Web</p>
+        <p class="hero-desc">Estudiante de DAW en Prometeo by The Power. Apasionado por construir software limpio, interfaces que enamoren y sistemas que escalen. Autoexigente por naturaleza, social por elección.</p>
+        <div class="hero-ctas">
+          <button class="cta cta-fill" onclick="goto('proj-view',document.querySelector('[data-view=proj-view]'))">Ver proyectos →</button>
+          <button class="cta cta-ghost" onclick="goto('about-view',document.querySelector('[data-view=about-view]'))">Sobre mí</button>
+        </div>
+        <div class="hero-stat-row">
+          <div class="h-stat"><span class="h-stat-n">3+</span><span class="h-stat-l">proyectos</span></div>
+          <div class="h-stat"><span class="h-stat-n">8+</span><span class="h-stat-l">tecnologías</span></div>
+          <div class="h-stat"><span class="h-stat-n">B2</span><span class="h-stat-l">cambridge</span></div>
+          <div class="h-stat"><span class="h-stat-n">∞</span><span class="h-stat-l">ganas</span></div>
+        </div>
+      </div>
+      <div class="hero-badge">
+        <div class="badge-ring">
+          <div class="badge-core">
+            <span class="badge-init">DL</span>
+            <span class="badge-sub">dev · web</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOBRE MÍ -->
+  <div class="view" id="about-view">
+    <div id="sec-indicator"><span class="sec-num">01</span><span class="sec-name">Sobre mí</span><span class="sec-breadcrumb">DLZ / about</span></div>
+    <div class="sec-wrap">
+      <div class="sec-head"><p class="sec-kicker">// about me</p><h2 class="sec-title">¿Quién soy <em>realmente</em>?</h2><div class="sec-line"></div></div>
+      <div class="about-layout">
+        <div class="about-left">
+          <div class="av-wrap">
+            <div class="av-ring"></div>
+            <div class="av-circle">DL</div>
+          </div>
+          <div class="about-chips">
+            <div class="chip"><span class="chip-dot"></span>autoexigente</div>
+            <div class="chip"><span class="chip-dot"></span>perfeccionista</div>
+            <div class="chip"><span class="chip-dot"></span>sociable</div>
+            <div class="chip"><span class="chip-dot"></span>trabajo en equipo</div>
+            <div class="chip"><span class="chip-dot"></span>curioso</div>
+            <div class="chip"><span class="chip-dot"></span>proactivo</div>
+          </div>
+        </div>
+        <div class="about-text">
+          <p>Me llamo <strong>David López Zurrón</strong> y soy estudiante de <strong>1º de DAW</strong> en Prometeo by The Power, en Madrid. Desde que empecé a programar, descubrí que esto no es solo un trabajo: es una forma de resolver problemas reales y construir cosas que antes solo existían en la cabeza.</p>
+          <p>Me defino como alguien que no se conforma con hacer las cosas «suficientemente bien». Soy <strong>perfeccionista</strong> y <strong>autoexigente</strong>, pero también sé que programar es trabajo en equipo y que escuchar a los demás es igual de importante que escribir buen código.</p>
+          <p>Fuera del mundo digital me apasionan el <strong>boxeo</strong>, los videojuegos y la música — especialmente el rap y el trap. Creo que la constancia y la disciplina que exige el deporte se traducen directamente en cómo afronto cada reto técnico.</p>
+          <p>Estoy al principio del camino. Y eso me emociona.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORMACIÓN -->
+  <div class="view" id="cv-view">
+    <div id="sec-indicator"><span class="sec-num">02</span><span class="sec-name">Currículum · Formación académica</span><span class="sec-breadcrumb">DLZ / education</span></div>
+    <div class="sec-wrap">
+      <div class="sec-head"><p class="sec-kicker">// education & cv</p><h2 class="sec-title">Mi <em>trayectoria</em></h2><div class="sec-line"></div></div>
+      <div class="tl">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <p class="tl-period">2024 – Actualidad</p>
+          <p class="tl-role">Técnico Superior en Desarrollo de Aplicaciones Web</p>
+          <p class="tl-org">Prometeo by The Power · Madrid · CFGS</p>
+          <p class="tl-desc">Módulos: Programación (Java), Bases de Datos (MySQL/PostgreSQL), Lenguajes de Marcas (HTML/CSS/JS), Entornos de Desarrollo, Sistemas Informáticos y Ampliación de Programación. Proyecto Intermodular: Fitmeteo.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <p class="tl-period">2020 – 2024</p>
+          <p class="tl-role">Educación Secundaria Obligatoria (ESO)</p>
+          <p class="tl-org">Madrid</p>
+          <p class="tl-desc">Formación de base con especial interés en tecnología y ciencias. 4 años de Francés. Desarrollo del hábito del aprendizaje autodidacta fuera del aula.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <p class="tl-period">2024</p>
+          <p class="tl-role">Cambridge B2 First Certificate in English (FCE)</p>
+          <p class="tl-org">Cambridge Assessment English · Certificación oficial</p>
+          <p class="tl-desc">Nivel B2 acreditado. Actualmente en preparación del C1 Advanced (CAE), previsto para 2025–2026.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPERIENCIA -->
+  <div class="view" id="exp-view">
+    <div id="sec-indicator"><span class="sec-num">03</span><span class="sec-name">Experiencia profesional</span><span class="sec-breadcrumb">DLZ / experience</span></div>
+    <div class="sec-wrap">
+      <div class="sec-head"><p class="sec-kicker">// experience</p><h2 class="sec-title">Experiencia <em>real</em></h2><div class="sec-line"></div></div>
+      <div style="background:var(--s1);border:1px solid var(--br);border-radius:4px;padding:2rem;display:flex;gap:1.5rem;align-items:flex-start;margin-bottom:1.5rem">
+        <div style="font-family:var(--fh);font-size:2rem;flex-shrink:0;color:var(--v)">⬡</div>
+        <div>
+          <p style="font-family:var(--fh);font-weight:700;font-size:1rem;margin-bottom:4px">Proyectos académicos e independientes</p>
+          <p style="font-family:var(--fm);font-size:0.7rem;color:var(--v);margin-bottom:0.75rem">2024 – Actualidad</p>
+          <p style="font-size:0.88rem;color:var(--mu);line-height:1.75">Aunque no cuento aún con experiencia laboral formal, he desarrollado proyectos reales de principio a fin: desde el diseño de base de datos hasta la interfaz de usuario, pasando por la lógica de negocio y el control de versiones con Git. Esto me ha dado una visión completa del ciclo de desarrollo y una base sólida para incorporarme al mundo profesional con garantías.</p>
+        </div>
+      </div>
+      <div style="background:var(--s1);border:1px solid rgba(139,92,246,0.25);border-radius:4px;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem">
+        <div style="font-family:var(--fm);font-size:0.7rem;color:var(--v2);flex-shrink:0">próximo paso</div>
+        <div style="width:1px;height:24px;background:var(--br)"></div>
+        <div style="font-size:0.85rem;color:var(--mu)">Buscando prácticas o primer empleo como desarrollador junior — preferiblemente fullstack — donde aportar valor desde el primer día y seguir creciendo.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROYECTOS -->
+  <div class="view" id="proj-view">
+    <div id="sec-indicator"><span class="sec-num">04</span><span class="sec-name">Proyectos realizados</span><span class="sec-breadcrumb">DLZ / projects</span></div>
+    <div class="sec-wrap">
+      <div class="sec-head"><p class="sec-kicker">// projects</p><h2 class="sec-title">Lo que he <em>construido</em></h2><div class="sec-line"></div></div>
+      <div class="proj-grid">
+        <div class="proj-card">
+          <div class="proj-head"><p class="proj-title">Fitmeteo</p><span class="proj-badge">intermodular</span></div>
+          <p class="proj-desc">Plataforma social de retos físicos gamificada. Web HTML/CSS + app JavaFX conectada a MySQL vía JDBC. Ranking, progreso, retos deportivos y comunidad. Proyecto real de principio a fin.</p>
+          <div class="proj-stack"><span class="st">Java 21</span><span class="st">JavaFX</span><span class="st">MySQL</span><span class="st">JDBC</span><span class="st">HTML/CSS</span><span class="st">JavaScript</span><span class="st">Maven</span><span class="st">Git</span></div>
+        </div>
+        <div class="proj-card">
+          <div class="proj-head"><p class="proj-title">UFC Fighter Hub</p><span class="proj-badge">personal</span></div>
+          <p class="proj-desc">Web interactiva sobre peleadores de la UFC. Permite insertar luchadores, consultar estadísticas y alternar entre múltiples temas de color. Nació de la pasión por las artes marciales.</p>
+          <div class="proj-stack"><span class="st">HTML5</span><span class="st">CSS3</span><span class="st">JavaScript</span><span class="st">DOM</span><span class="st">LocalStorage</span></div>
+        </div>
+        <div class="proj-card" style="border-color:rgba(139,92,246,0.2)">
+          <div class="proj-head"><p class="proj-title">Portfolio Personal</p><span class="proj-badge">personal</span></div>
+          <p class="proj-desc">Este mismo portfolio. SPA con navegación lateral, animaciones y diseño dark personalizado. Diseñado para presentar mi perfil de forma creativa y diferenciada.</p>
+          <div class="proj-stack"><span class="st">HTML5</span><span class="st">CSS3</span><span class="st">JavaScript</span><span class="st">SPA</span><span class="st">UI Design</span></div>
+        </div>
+        <div class="proj-card" style="border-style:dashed;border-color:rgba(139,92,246,0.2);justify-content:center;align-items:center;text-align:center;gap:0.5rem;padding:2rem">
+          <p style="font-family:var(--fh);font-size:0.95rem;color:var(--mu)">más en camino</p>
+          <p style="font-family:var(--fm);font-size:0.7rem;color:var(--br)">github.com/David-Dama</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HABILIDADES -->
+  <div class="view" id="skills-view">
+    <div id="sec-indicator"><span class="sec-num">05</span><span class="sec-name">Habilidades y competencias</span><span class="sec-breadcrumb">DLZ / skills</span></div>
+    <div class="sec-wrap">
+      <div class="sec-head"><p class="sec-kicker">// skills & stack</p><h2 class="sec-title">Mi <em>arsenal</em></h2><div class="sec-line"></div></div>
+      <div class="skills-layout">
+        <div class="sk-card">
+          <p class="sk-cat">// frontend</p>
+          <div class="sk-tags">
+            <span class="sk-tag top">HTML5</span><span class="sk-tag top">CSS3</span><span class="sk-tag top">JavaScript</span>
+            <span class="sk-tag hi">React + Vite</span><span class="sk-tag hi">JavaFX</span><span class="sk-tag">Diseño UI</span>
+          </div>
+        </div>
+        <div class="sk-card">
+          <p class="sk-cat">// backend / lógica</p>
+          <div class="sk-tags">
+            <span class="sk-tag top">Java 21</span><span class="sk-tag hi">POO</span>
+            <span class="sk-tag hi">JDBC</span><span class="sk-tag">Python</span><span class="sk-tag">C (básico)</span><span class="sk-tag">Maven</span>
+          </div>
+        </div>
+        <div class="sk-card">
+          <p class="sk-cat">// bases de datos</p>
+          <div class="sk-tags">
+            <span class="sk-tag top">MySQL</span><span class="sk-tag top">PostgreSQL</span>
+            <span class="sk-tag hi">SQL</span><span class="sk-tag">Diseño E/R</span><span class="sk-tag">Modelo relacional</span>
+          </div>
+        </div>
+        <div class="sk-card">
+          <p class="sk-cat">// soft skills</p>
+          <div class="sk-tags">
+            <span class="sk-tag hi">Trabajo en equipo</span><span class="sk-tag hi">Autogestión</span>
+            <span class="sk-tag">Perfeccionismo</span><span class="sk-tag">Comunicación</span><span class="sk-tag">Resolución de problemas</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IDIOMAS -->
+  <div class="view" id="lang-view">
+    <div id="sec-indicator"><span class="sec-num">06</span><span class="sec-name">Idiomas y herramientas digitales</span><span class="sec-breadcrumb">DLZ / languages & tools</span></div>
+    <div class="sec-wrap">
+      <div class="sec-head"><p class="sec-kicker">// languages & tools</p><h2 class="sec-title">Sin <em>fronteras</em></h2><div class="sec-line"></div></div>
+      <div class="lang-grid">
+        <div class="lang-card">
+          <p class="lang-n">Español</p><p class="lang-lv">Lengua materna</p>
+          <div class="lang-bar"><div class="lang-fill" style="width:100%"></div></div>
+        </div>
+        <div class="lang-card">
+          <p class="lang-n">Inglés</p><p class="lang-lv">B2 FCE · preparando C1</p>
+          <div class="lang-bar"><div class="lang-fill" style="width:75%"></div></div>
+        </div>
+        <div class="lang-card">
+          <p class="lang-n">Francés</p><p class="lang-lv">Básico · 4 años ESO</p>
+          <div class="lang-bar"><div class="lang-fill" style="width:30%"></div></div>
+        </div>
+      </div>
+      <p style="font-family:var(--fh);font-weight:700;font-size:0.95rem;margin-bottom:1rem;color:var(--tx)">Herramientas digitales</p>
+      <div class="tools-flex">
+        <span class="tool"><span class="tool-dot"></span>GitHub</span>
+        <span class="tool"><span class="tool-dot"></span>VS Code</span>
+        <span class="tool"><span class="tool-dot"></span>IntelliJ IDEA</span>
+        <span class="tool"><span class="tool-dot"></span>MySQL Workbench</span>
+        <span class="tool"><span class="tool-dot"></span>draw.io</span>
+        <span class="tool"><span class="tool-dot"></span>Figma</span>
+        <span class="tool"><span class="tool-dot"></span>LinkedIn</span>
+        <span class="tool"><span class="tool-dot"></span>Notion</span>
+        <span class="tool"><span class="tool-dot"></span>Prettier</span>
+        <span class="tool"><span class="tool-dot"></span>Maven</span>
+        <span class="tool"><span class="tool-dot"></span>npm / Node.js</span>
+        <span class="tool"><span class="tool-dot"></span>Terminal</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- OBJETIVOS -->
+  <div class="view" id="obj-view">
+    <div id="sec-indicator"><span class="sec-num">07</span><span class="sec-name">Objetivos profesionales</span><span class="sec-breadcrumb">DLZ / goals</span></div>
+    <div class="sec-wrap">
+      <div class="sec-head"><p class="sec-kicker">// goals</p><h2 class="sec-title">Hacia dónde <em>voy</em></h2><div class="sec-line"></div></div>
+      <div class="obj-grid">
+        <div class="obj-card">
+          <p class="obj-n">01</p>
+          <p class="obj-t">Terminar DAW con excelencia</p>
+          <p class="obj-d">Completar el ciclo con los mejores resultados posibles, aprovechando cada proyecto para crecer como desarrollador y consolidar una base técnica sólida.</p>
+        </div>
+        <div class="obj-card">
+          <p class="obj-n">02</p>
+          <p class="obj-t">Sacarme el C1 de inglés</p>
+          <p class="obj-d">El mundo del desarrollo es global. El C1 Advanced me abrirá puertas a equipos internacionales, documentación técnica avanzada y entornos de trabajo en inglés.</p>
+        </div>
+        <div class="obj-card">
+          <p class="obj-n">03</p>
+          <p class="obj-t">Acceder a la universidad</p>
+          <p class="obj-d">Estudiar Ingeniería del Software para consolidar una base teórica y técnica que complemente la formación práctica del CFGS.</p>
+        </div>
+        <div class="obj-card">
+          <p class="obj-n">04</p>
+          <p class="obj-t">Máster y especialización</p>
+          <p class="obj-d">A largo plazo, un máster en Ingeniería de Software o Arquitectura de Sistemas para trabajar en proyectos de alto impacto y seguir siendo el mejor en lo que hago.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFLEXIÓN -->
+  <div class="view" id="ref-view">
+    <div id="sec-indicator"><span class="sec-num">08</span><span class="sec-name">Reflexión personal final</span><span class="sec-breadcrumb">DLZ / reflection</span></div>
+    <div class="sec-wrap">
+      <div class="sec-head"><p class="sec-kicker">// final reflection</p><h2 class="sec-title">Lo que he <em>aprendido</em></h2><div class="sec-line"></div></div>
+      <div class="ref-box">
+        <p class="ref-quote">"Empecé a programar y no encontré un trabajo. Encontré una forma de pensar."</p>
+        <p class="ref-p">Cuando miro atrás y veo lo que he aprendido en este primer año de DAW, me doy cuenta de que la programación no es solo escribir código: es aprender a descomponer problemas, trabajar en equipo, documentar decisiones y comprometerte con un resultado de calidad aunque nadie te lo exija.</p>
+        <p class="ref-p">Proyectos como <strong>Fitmeteo</strong> me han enseñado lo que significa construir algo de principio a fin. No fue fácil. Pero fue exactamente el tipo de reto que me hace querer seguir.</p>
+        <p class="ref-p">Soy <strong>autoexigente</strong> porque creo que hay una diferencia enorme entre terminar algo y terminarlo bien. Como en el <strong>boxeo</strong>: la disciplina y la constancia son lo único que separa donde estás de donde quieres llegar.</p>
+        <p class="ref-p">Estoy al principio del camino. Y eso, lejos de asutarme, me emociona.</p>
+      </div>
+      <div class="footer-row" style="padding:1.5rem 0;margin-top:2rem">
+        <div>
+          <p style="font-family:var(--fh);font-weight:800;font-size:0.95rem;color:var(--v)">David López Zurrón</p>
+          <p style="font-family:var(--fm);font-size:0.65rem;color:var(--mu);margin-top:2px">1º DAW · Prometeo by The Power · Madrid · 2025</p>
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/David-Dama" target="_blank">GitHub →</a>
+          <a href="https://linkedin.com" target="_blank">LinkedIn →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+const VIEWS=['hero-view','about-view','cv-view','exp-view','proj-view','skills-view','lang-view','obj-view','ref-view'];
+const LABELS=['01 / 09 — inicio','02 / 09 — sobre mí','03 / 09 — formación','04 / 09 — experiencia','05 / 09 — proyectos','06 / 09 — habilidades','07 / 09 — idiomas','08 / 09 — objetivos','09 / 09 — reflexión'];
+
+function goto(id, btn) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  const idx=VIEWS.indexOf(id);
+  if(idx>=0){
+    document.getElementById('prog-fill').style.width=Math.round((idx+1)/VIEWS.length*100)+'%';
+    document.getElementById('prog-label').textContent=LABELS[idx];
+  }
+  document.getElementById('main').scrollTop=0;
+}
+</script>
