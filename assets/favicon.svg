@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Favicon David López Zurrón</title>
+  <desc id="desc">Icono oscuro con rombo neón violeta, rosa y turquesa y las iniciales DL.</desc>
+  <defs>
+    <linearGradient id="bg" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#161624" />
+      <stop offset="0.55" stop-color="#07070d" />
+      <stop offset="1" stop-color="#0f0f1a" />
+    </linearGradient>
+    <linearGradient id="neon" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b5cf6" />
+      <stop offset="0.52" stop-color="#ec4899" />
+      <stop offset="1" stop-color="#14b8a6" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="55%">
+      <stop offset="0" stop-color="#8b5cf6" stop-opacity="0.55" />
+      <stop offset="0.58" stop-color="#ec4899" stop-opacity="0.18" />
+      <stop offset="1" stop-color="#07070d" stop-opacity="0" />
+    </radialGradient>
+    <filter id="soft-shadow" x="-35%" y="-35%" width="170%" height="170%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#8b5cf6" flood-opacity="0.55" />
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#ec4899" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <rect width="64" height="64" rx="16" fill="url(#bg)" />
+  <rect width="64" height="64" rx="16" fill="url(#glow)" />
+
+  <path d="M32 6 58 32 32 58 6 32Z" fill="none" stroke="url(#neon)" stroke-width="3.5" filter="url(#soft-shadow)" />
+  <path d="M32 14 50 32 32 50 14 32Z" fill="#07070d" stroke="#2a2840" stroke-width="1.5" />
+
+  <circle cx="50" cy="14" r="3" fill="#14b8a6" />
+  <circle cx="14" cy="50" r="2.5" fill="#ec4899" opacity="0.85" />
+
+  <text x="32" y="38" text-anchor="middle" fill="#f5f3ff" font-family="Syne, Outfit, Arial, sans-serif" font-size="18" font-weight="800" letter-spacing="-1.5">DL</text>
+  <path d="M24 44h16" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" />
+</svg>
